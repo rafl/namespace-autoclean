@@ -16,6 +16,6 @@ use Test::More tests => 6;
 ok( Foo->can('bar'));
 ok( Foo->can('moo'));
 ok(!Foo->can('kooh'));
-ok(!Foo->can('affe'));
+ok( Foo->can('affe'));
 ok( Foo->can('tiger'));
 ok(!Foo->can('subname'));
