@@ -17,8 +17,8 @@ use namespace::clean;
     sub bar { imported_function('stuff') }
 
     # later on:
-    Foo->bar;                   # works
-    Foo->qw/imported_function/; # will fail. imported_function got cleaned after compilation
+    Foo->bar;               # works
+    Foo->imported_function; # will fail. imported_function got cleaned after compilation
 
 =head1 DESCRIPTION
 
