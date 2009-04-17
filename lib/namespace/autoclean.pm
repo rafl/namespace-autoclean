@@ -35,6 +35,12 @@ will clean all imported functions, no matter if you imported them before or
 after you C<use>d the pagma. It will also not touch anything that looks like a
 method, according to C<Class::MOP::Class::get_method_list>.
 
+Sometimes you don't want to clean imports only, but also helper functions
+you're using in your methods. The C<-also> switch can be used to declare a list
+of functions that should be removed additional to any imports:
+
+    use namespace::autoclean -also => ['some_function', 'another_function'];
+
 =head1 SEE ALSO
 
 L<namespace::clean>
