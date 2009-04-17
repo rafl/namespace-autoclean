@@ -46,12 +46,14 @@ L<B::Hooks::EndOfScope>
 =cut
 
 sub import {
+    my ($class, %args) = @_;
     my $caller = caller();
+    my @also = @{ $args{-also} || [] };
     on_scope_end {
         my $meta = Class::MOP::class_of($caller) || Class::MOP::Class->initialize($caller);
         my %methods = map { ($_ => 1) } $meta->get_method_list;
         my @symbols = keys %{ $meta->get_all_package_symbols('CODE') };
-        namespace::clean->clean_subroutines($caller, grep { !$methods{$_} } @symbols);
+        namespace::clean->clean_subroutines($caller, @also, grep { !$methods{$_} } @symbols);
     };
 }
 
