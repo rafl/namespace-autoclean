@@ -1,2 +1,5 @@
+0.02  Fri, 17 Apr 2009 14:21:46 +0200
+  * Allow removing symbols other than imports using the -also option.
+
 0.01  Sat, 11 Apr 2009 02:41:50 +0200
   * Initial release.
