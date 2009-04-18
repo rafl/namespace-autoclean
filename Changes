@@ -1,3 +1,7 @@
+0.03  Sat, 18 Apr 2009 11:43:10 +0200
+  * Changes dependeny of Class::MOP to 0.80, this is the first version
+    with class_of.
+
 0.02  Fri, 17 Apr 2009 14:21:46 +0200
   * Allow removing symbols other than imports using the -also option.
 
