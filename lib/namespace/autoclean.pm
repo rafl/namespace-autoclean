@@ -41,6 +41,11 @@ of functions that should be removed additional to any imports:
 
     use namespace::autoclean -also => ['some_function', 'another_function'];
 
+If only one function needs to be additionally cleaned the C<-also> switch also
+accepts a plain string:
+
+    use namespace::autoclean -also => 'some_function';
+
 =head1 SEE ALSO
 
 L<namespace::clean>
