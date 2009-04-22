@@ -54,7 +54,9 @@ L<B::Hooks::EndOfScope>
 sub import {
     my ($class, %args) = @_;
     my $caller = caller();
-    my @also = @{ $args{-also} || [] };
+    my @also = exists $args{-also}
+        ? (ref $args{-also} eq 'ARRAY' ? @{ $args{-also} } : $args{-also})
+        : ();
     on_scope_end {
         my $meta = Class::MOP::class_of($caller) || Class::MOP::Class->initialize($caller);
         my %methods = map { ($_ => 1) } $meta->get_method_list;
