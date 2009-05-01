@@ -1,3 +1,7 @@
+0.05  Fri, 01 May 2009 12:44:25 +0200
+  * Don't clean the 'meta' method for Moose roles, even if it's not
+    included in get_method_list.
+
 0.04  Wed, 22 Apr 2009 07:42:32 +0200
   * Make -also accept a plain string instead of only an array ref.
 
