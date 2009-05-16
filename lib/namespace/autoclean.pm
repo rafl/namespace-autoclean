@@ -58,15 +58,17 @@ L<B::Hooks::EndOfScope>
 
 sub import {
     my ($class, %args) = @_;
-    my $caller = caller();
+
+    my $cleanee = exists $args{-cleanee} ? $args{-cleanee} : scalar caller;
+
     my @also = exists $args{-also}
         ? (ref $args{-also} eq 'ARRAY' ? @{ $args{-also} } : $args{-also})
         : ();
     on_scope_end {
-        my $meta = Class::MOP::class_of($caller) || Class::MOP::Class->initialize($caller);
+        my $meta = Class::MOP::class_of($cleanee) || Class::MOP::Class->initialize($cleanee);
         my %methods = map { ($_ => 1) } keys %{$meta->get_method_map};
         my @symbols = keys %{ $meta->get_all_package_symbols('CODE') };
-        namespace::clean->clean_subroutines($caller, @also, grep { !$methods{$_} } @symbols);
+        namespace::clean->clean_subroutines($cleanee, @also, grep { !$methods{$_} } @symbols);
     };
 }
 
