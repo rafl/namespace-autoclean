@@ -46,6 +46,20 @@ accepts a plain string:
 
     use namespace::autoclean -also => 'some_function';
 
+If you're writing an exporter and you want to clean up after yourself (and your
+peers), you can use the C<-cleanee> switch to specify what package to clean:
+
+  package My::MooseX::namespace::autoclean;
+  use strict;
+
+  use namespace::autocleanclean (); # no cleanup, just load
+
+  sub import {
+      namespace::autoclean->import(
+        -cleanee => scalar(caller),
+      );
+  }
+
 =head1 SEE ALSO
 
 L<namespace::clean>
