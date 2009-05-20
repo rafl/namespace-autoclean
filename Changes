@@ -1,3 +1,6 @@
+0.06  Wed, 20 May 2009 15:14:36 +0200
+ * Allow selection of explicit cleanee (Shawn M Moore).
+
 0.05  Fri, 01 May 2009 12:44:25 +0200
   * Don't clean the 'meta' method for Moose roles, even if it's not
     included in get_method_list.
