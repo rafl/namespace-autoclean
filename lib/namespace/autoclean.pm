@@ -52,9 +52,13 @@ peers), you can use the C<-cleanee> switch to specify what package to clean:
 
 =head1 PARAMETERS
 
-=head2 -also => [ ITEM, .. ]
+=head2 -also => [ ITEM | REGEX | SUB, .. ]
 
 =head2 -also => ITEM
+
+=head2 -also => REGEX
+
+=head2 -also => SUB
 
 Sometimes you don't want to clean imports only, but also helper functions
 you're using in your methods. The C<-also> switch can be used to declare a list
@@ -67,24 +71,18 @@ accepts a plain string:
 
     use namespace::autoclean -also => 'some_function';
 
-=head2 -match => [ REGEX | SUB, .. ]
-
-=head2 -match => REGEX
-
-=head2 -match => SUB
-
 In some situations, you may wish for a more I<powerful> cleaning solution.
 
-The C<-match> switch can take a list, or a single item, containing either
-codrefs or regex to match against local function names to clean.
+The C<-also> switch can take a Regex or a CodeRef to match against local
+function names to clean.
 
-    use namespace::autoclean -match => qr/^_/
+    use namespace::autoclean -also => qr/^_/
 
-    use namespace::autoclean -match => sub { $_ =~ m{^_} };
+    use namespace::autoclean -also => sub { $_ =~ m{^_} };
 
-    use namespace::autoclean -match => [qr/^_/ , qr/^hidden_/ ];
+    use namespace::autoclean -also => [qr/^_/ , qr/^hidden_/ ];
 
-    use namespace::autoclean -match => [sub { $_ =~ m/^_/ or $_ =~ m/^hidden/ }, sub { uc($_) == $_ } ];
+    use namespace::autoclean -also => [sub { $_ =~ m/^_/ or $_ =~ m/^hidden/ }, sub { uc($_) == $_ } ];
 
 =head1 SEE ALSO
 
