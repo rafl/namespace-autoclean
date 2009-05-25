@@ -35,17 +35,6 @@ will clean all imported functions, no matter if you imported them before or
 after you C<use>d the pagma. It will also not touch anything that looks like a
 method, according to C<Class::MOP::Class::get_method_list>.
 
-Sometimes you don't want to clean imports only, but also helper functions
-you're using in your methods. The C<-also> switch can be used to declare a list
-of functions that should be removed additional to any imports:
-
-    use namespace::autoclean -also => ['some_function', 'another_function'];
-
-If only one function needs to be additionally cleaned the C<-also> switch also
-accepts a plain string:
-
-    use namespace::autoclean -also => 'some_function';
-
 If you're writing an exporter and you want to clean up after yourself (and your
 peers), you can use the C<-cleanee> switch to specify what package to clean:
 
@@ -59,6 +48,42 @@ peers), you can use the C<-cleanee> switch to specify what package to clean:
         -cleanee => scalar(caller),
       );
   }
+
+=head1 PARAMETERS
+
+=head2 -also => [ ITEM, .. ]
+
+=head2 -also => ITEM
+
+Sometimes you don't want to clean imports only, but also helper functions
+you're using in your methods. The C<-also> switch can be used to declare a list
+of functions that should be removed additional to any imports:
+
+    use namespace::autoclean -also => ['some_function', 'another_function'];
+
+If only one function needs to be additionally cleaned the C<-also> switch also
+accepts a plain string:
+
+    use namespace::autoclean -also => 'some_function';
+
+=head2 -match => [ REGEX | SUB, .. ]
+
+=head2 -match => REGEX
+
+=head2 -match => SUB
+
+In some situations, you may wish for a more I<powerful> cleaning solution.
+
+The C<-match> switch can take a list, or a single item, containing either
+codrefs or regex to match against local function names to clean.
+
+    use namespace::autoclean -match => qr/^_/
+
+    use namespace::autoclean -match => sub { $_ =~ m{^_} };
+
+    use namespace::autoclean -match => [qr/^_/ , qr/^hidden_/ ];
+
+    use namespace::autoclean -match => [sub { $_ =~ m/^_/ or $_ =~ m/^hidden/ }, sub { uc($_) == $_ } ];
 
 =head1 SEE ALSO
 
