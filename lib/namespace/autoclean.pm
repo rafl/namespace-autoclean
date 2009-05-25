@@ -6,6 +6,7 @@ package namespace::autoclean;
 
 use Class::MOP;
 use B::Hooks::EndOfScope;
+use List::Util qw( first );
 use namespace::clean;
 
 =head1 SYNOPSIS
@@ -98,33 +99,37 @@ L<B::Hooks::EndOfScope>
 sub import {
     my ($class, %args) = @_;
 
+    my $subcast = sub {
+        my $i = shift;
+        return $i if ref $i eq 'CODE';
+        return sub { $_ =~ $i } if ref $i eq 'Regexp';
+        return sub { $_ eq $i };
+    };
+    my $runtest = sub {
+        my ( $code, $method_name ) = @_;
+        local $_ = $method_name;
+        return $code->();
+    };
+
     my $cleanee = exists $args{-cleanee} ? $args{-cleanee} : scalar caller;
 
-    my @also = exists $args{-also}
+    my @also = map { $subcast->($_) } (
+        exists $args{-also}
         ? (ref $args{-also} eq 'ARRAY' ? @{ $args{-also} } : $args{-also})
-        : ();
-
-    my @match = map {
-            my $i = $_;
-            ref $i eq 'CODE' ?  $i : sub { $_ =~ $i }
-        }
-        exists $args{-match}
-            ? (ref $args{-match} eq 'ARRAY' ? @{ $args{-match} } : $args{-match})
-            : ();
+        : ()
+    );
 
     on_scope_end {
         my $meta = Class::MOP::class_of($cleanee) || Class::MOP::Class->initialize($cleanee);
         my %methods = map { ($_ => 1) } keys %{$meta->get_method_map};
-        my %extra = map { $_ => 1 } @also;
-    methodtest: for my $method ( keys %{$meta->get_method_map } ){
+        my %extra = ();
+
+        for my $method ( keys %{$meta->get_method_map} ) {
             next if exists $extra{$_};
-            for my $test ( @match ) {
-                local $_ = $method;
-                next unless $test->();
-                $extra{$_} = 1;
-                next methodtest;
-            }
+            next unless first { $runtest->( $_, $method ) } @also;
+            $extra{$method} = 1;
         }
+
         my @symbols = keys %{ $meta->get_all_package_symbols('CODE') };
         namespace::clean->clean_subroutines($cleanee, keys %extra, grep { !$methods{$_} } @symbols);
     };
