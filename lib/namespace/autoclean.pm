@@ -79,7 +79,7 @@ sub import {
         ? (ref $args{-also} eq 'ARRAY' ? @{ $args{-also} } : $args{-also})
         : ();
     on_scope_end {
-        my $meta = Class::MOP::class_of($cleanee) || Class::MOP::Class->initialize($cleanee);
+        my $meta = Class::MOP::Class->initialize($cleanee);
         my %methods = map { ($_ => 1) } keys %{$meta->get_method_map};
         my @symbols = keys %{ $meta->get_all_package_symbols('CODE') };
         namespace::clean->clean_subroutines($cleanee, @also, grep { !$methods{$_} } @symbols);
