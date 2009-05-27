@@ -1,5 +1,6 @@
-0.07  ???
+0.07  Wed, 27 May 2009 22:27:46 +0200
  * Drop the useless Class::MOP::class_of call (Chris Prather).
+ * Extend -also to make it accept coderefs and regexen (Kent Fredric).
 
 0.06  Wed, 20 May 2009 15:14:36 +0200
  * Allow selection of explicit cleanee (Shawn M Moore).
