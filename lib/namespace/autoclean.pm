@@ -6,6 +6,7 @@ package namespace::autoclean;
 
 use Class::MOP;
 use B::Hooks::EndOfScope;
+use List::Util qw( first );
 use namespace::clean;
 
 =head1 SYNOPSIS
@@ -35,17 +36,6 @@ will clean all imported functions, no matter if you imported them before or
 after you C<use>d the pagma. It will also not touch anything that looks like a
 method, according to C<Class::MOP::Class::get_method_list>.
 
-Sometimes you don't want to clean imports only, but also helper functions
-you're using in your methods. The C<-also> switch can be used to declare a list
-of functions that should be removed additional to any imports:
-
-    use namespace::autoclean -also => ['some_function', 'another_function'];
-
-If only one function needs to be additionally cleaned the C<-also> switch also
-accepts a plain string:
-
-    use namespace::autoclean -also => 'some_function';
-
 If you're writing an exporter and you want to clean up after yourself (and your
 peers), you can use the C<-cleanee> switch to specify what package to clean:
 
@@ -60,6 +50,40 @@ peers), you can use the C<-cleanee> switch to specify what package to clean:
       );
   }
 
+=head1 PARAMETERS
+
+=head2 -also => [ ITEM | REGEX | SUB, .. ]
+
+=head2 -also => ITEM
+
+=head2 -also => REGEX
+
+=head2 -also => SUB
+
+Sometimes you don't want to clean imports only, but also helper functions
+you're using in your methods. The C<-also> switch can be used to declare a list
+of functions that should be removed additional to any imports:
+
+    use namespace::autoclean -also => ['some_function', 'another_function'];
+
+If only one function needs to be additionally cleaned the C<-also> switch also
+accepts a plain string:
+
+    use namespace::autoclean -also => 'some_function';
+
+In some situations, you may wish for a more I<powerful> cleaning solution.
+
+The C<-also> switch can take a Regex or a CodeRef to match against local
+function names to clean.
+
+    use namespace::autoclean -also => qr/^_/
+
+    use namespace::autoclean -also => sub { $_ =~ m{^_} };
+
+    use namespace::autoclean -also => [qr/^_/ , qr/^hidden_/ ];
+
+    use namespace::autoclean -also => [sub { $_ =~ m/^_/ or $_ =~ m/^hidden/ }, sub { uc($_) == $_ } ];
+
 =head1 SEE ALSO
 
 L<namespace::clean>
@@ -73,16 +97,40 @@ L<B::Hooks::EndOfScope>
 sub import {
     my ($class, %args) = @_;
 
+    my $subcast = sub {
+        my $i = shift;
+        return $i if ref $i eq 'CODE';
+        return sub { $_ =~ $i } if ref $i eq 'Regexp';
+        return sub { $_ eq $i };
+    };
+
+    my $runtest = sub {
+        my ($code, $method_name) = @_;
+        local $_ = $method_name;
+        return $code->();
+    };
+
     my $cleanee = exists $args{-cleanee} ? $args{-cleanee} : scalar caller;
 
-    my @also = exists $args{-also}
+    my @also = map { $subcast->($_) } (
+        exists $args{-also}
         ? (ref $args{-also} eq 'ARRAY' ? @{ $args{-also} } : $args{-also})
-        : ();
+        : ()
+    );
+
     on_scope_end {
         my $meta = Class::MOP::Class->initialize($cleanee);
-        my %methods = map { ($_ => 1) } keys %{$meta->get_method_map};
+        my %methods = map { ($_ => 1) } keys %{ $meta->get_method_map };
+        my %extra = ();
+
+        for my $method (keys %methods) {
+            next if exists $extra{$_};
+            next unless first { $runtest->($_, $method) } @also;
+            $extra{ $method } = 1;
+        }
+
         my @symbols = keys %{ $meta->get_all_package_symbols('CODE') };
-        namespace::clean->clean_subroutines($cleanee, @also, grep { !$methods{$_} } @symbols);
+        namespace::clean->clean_subroutines($cleanee, keys %extra, grep { !$methods{$_} } @symbols);
     };
 }
 
