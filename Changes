@@ -1,9 +1,13 @@
+0.08  Sun, 07 Jun 2009 17:34:02 +0200
+  * Run the role tests again Moose >= 0.56 only.
+  * Add diagnostic for the Moose version to the role test.
+
 0.07  Wed, 27 May 2009 22:27:46 +0200
- * Drop the useless Class::MOP::class_of call (Chris Prather).
- * Extend -also to make it accept coderefs and regexen (Kent Fredric).
+  * Drop the useless Class::MOP::class_of call (Chris Prather).
+  * Extend -also to make it accept coderefs and regexen (Kent Fredric).
 
 0.06  Wed, 20 May 2009 15:14:36 +0200
- * Allow selection of explicit cleanee (Shawn M Moore).
+  * Allow selection of explicit cleanee (Shawn M Moore).
 
 0.05  Fri, 01 May 2009 12:44:25 +0200
   * Don't clean the 'meta' method for Moose roles, even if it's not
