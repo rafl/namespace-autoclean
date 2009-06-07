@@ -8,6 +8,10 @@ BEGIN {
     plan tests => 1;
 }
 
+BEGIN {
+    diag "Testing with Moose $Moose::VERSION";
+}
+
 {
     package Foo;
     use Moose::Role;
