@@ -33,7 +33,7 @@ class or instances.
 
 This module is very similar to L<namespace::clean|namespace::clean>, except it
 will clean all imported functions, no matter if you imported them before or
-after you C<use>d the pagma. It will also not touch anything that looks like a
+after you C<use>d the pragma. It will also not touch anything that looks like a
 method, according to C<Class::MOP::Class::get_method_list>.
 
 If you're writing an exporter and you want to clean up after yourself (and your
