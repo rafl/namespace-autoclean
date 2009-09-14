@@ -120,7 +120,8 @@ sub import {
 
     on_scope_end {
         my $meta = Class::MOP::Class->initialize($cleanee);
-        my %methods = map { ($_ => 1) } keys %{ $meta->get_method_map };
+        my %methods = map { ($_ => 1) } $meta->get_method_list;
+        $methods{meta} = 1 if $meta->isa('Moose::Meta::Role') && Moose->VERSION < 0.90;
         my %extra = ();
 
         for my $method (keys %methods) {
