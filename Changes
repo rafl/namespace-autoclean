@@ -1,3 +1,7 @@
+0.09
+  * Fix to avoid deprecation warnings from the latest Class::MOP, but
+    it still works with older versions too. (Dave Rolsky)
+
 0.08  Sun, 07 Jun 2009 17:34:02 +0200
   * Run the role tests again Moose >= 0.56 only.
   * Add diagnostic for the Moose version to the role test.
