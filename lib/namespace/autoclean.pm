@@ -42,7 +42,7 @@ peers), you can use the C<-cleanee> switch to specify what package to clean:
   package My::MooseX::namespace::autoclean;
   use strict;
 
-  use namespace::autocleanclean (); # no cleanup, just load
+  use namespace::autoclean (); # no cleanup, just load
 
   sub import {
       namespace::autoclean->import(
