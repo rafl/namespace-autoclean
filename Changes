@@ -1,3 +1,6 @@
+0.10  Sat, 01 May 2010 20:32:59 +0200
+  * Fix documentation typo ( Andrew Rodland).
+
 0.09  Tue, 15 Sep 2009 07:45:16 +0200
   * Fix to avoid deprecation warnings from the latest Class::MOP, but
     it still works with older versions too. (Dave Rolsky)
