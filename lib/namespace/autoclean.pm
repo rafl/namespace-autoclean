@@ -4,10 +4,10 @@ use warnings;
 package namespace::autoclean;
 # ABSTRACT: Keep imports out of your namespace
 
-use Class::MOP;
+use Class::MOP 0.80;
 use B::Hooks::EndOfScope;
 use List::Util qw( first );
-use namespace::clean;
+use namespace::clean 0.11;
 
 =head1 SYNOPSIS
 
