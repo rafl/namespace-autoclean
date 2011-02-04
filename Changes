@@ -1,3 +1,7 @@
+0.12  Fri, 04 Feb 2010 10:39:00 +0000
+  * Bump namespace::clean dep to 0.20 to pull in the bugfix for
+    Package::Stash::XS 0.19
+
 0.11  Fri, 07 May 2010 19:32:37 +0200
   * Improve distribution metadata.
 
