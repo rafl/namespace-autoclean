@@ -7,7 +7,7 @@ package namespace::autoclean;
 use Class::MOP 0.80;
 use B::Hooks::EndOfScope;
 use List::Util qw( first );
-use namespace::clean 0.11;
+use namespace::clean 0.20;
 
 =head1 SYNOPSIS
 
