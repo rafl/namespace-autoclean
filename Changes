@@ -1,9 +1,9 @@
-0.13  Wed, 24 Aug 2010 09:33:00 +0000
+0.13  Wed, 24 Aug 2011 09:33:00 +0000
   * Fix issue in dist.ini which was causing links to be incorrectly generated.
   * Re-package to remove BEGIN { $VERSION hackery by using a newer
     Dist-Zilla.
 
-0.12  Fri, 04 Feb 2010 10:39:00 +0000
+0.12  Fri, 04 Feb 2011 10:39:00 +0000
   * Bump namespace::clean dep to 0.20 to pull in the bugfix for
     Package::Stash::XS 0.19
 
