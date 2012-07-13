@@ -130,7 +130,7 @@ sub import {
             $extra{ $method } = 1;
         }
 
-        my @symbols = keys %{ $meta->get_all_package_symbols('CODE') };
+        my @symbols = grep { !/^\(/ } keys %{ $meta->get_all_package_symbols('CODE') };
         namespace::clean->clean_subroutines($cleanee, keys %extra, grep { !$methods{$_} } @symbols);
     };
 }
