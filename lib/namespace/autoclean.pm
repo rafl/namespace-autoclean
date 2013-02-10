@@ -4,10 +4,11 @@ use warnings;
 package namespace::autoclean;
 # ABSTRACT: Keep imports out of your namespace
 
-use Class::MOP 0.80;
 use B::Hooks::EndOfScope;
 use List::Util qw( first );
 use namespace::clean 0.20;
+use Package::Stash ();
+use Sub::Identify ();
 
 =head1 SYNOPSIS
 
@@ -119,9 +120,15 @@ sub import {
     );
 
     on_scope_end {
-        my $meta = Class::MOP::Class->initialize($cleanee);
-        my %methods = map { ($_ => 1) } $meta->get_method_list;
-        $methods{meta} = 1 if $meta->isa('Moose::Meta::Role') && Moose->VERSION < 0.90;
+        my $meta = Package::Stash->new($cleanee);
+        my @symbols =
+            grep !/^\(/, # Do not remove overloading
+            $meta->list_all_symbols('CODE');
+        my %methods =
+            map { ($_ => 1) }
+            grep { $cleanee eq Sub::Identify::stash_name($cleanee->can($_)) }
+            @symbols;
+        $methods{meta} = 1 if $cleanee->isa('Moose::Meta::Role') && Moose->VERSION < 0.90;
         my %extra = ();
 
         for my $method (keys %methods) {
@@ -130,7 +137,6 @@ sub import {
             $extra{ $method } = 1;
         }
 
-        my @symbols = keys %{ $meta->get_all_package_symbols('CODE') };
         namespace::clean->clean_subroutines($cleanee, keys %extra, grep { !$methods{$_} } @symbols);
     };
 }
