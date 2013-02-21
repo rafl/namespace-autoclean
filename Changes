@@ -1,3 +1,5 @@
+  * Never clean an import() method from a class. (Dave Rolsky)
+
 0.13  Wed, 24 Aug 2011 09:33:00 +0000
   * Fix issue in dist.ini which was causing links to be incorrectly generated.
   * Re-package to remove BEGIN { $VERSION hackery by using a newer
