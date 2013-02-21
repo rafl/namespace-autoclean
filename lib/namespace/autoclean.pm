@@ -122,6 +122,7 @@ sub import {
         my $meta = Class::MOP::Class->initialize($cleanee);
         my %methods = map { ($_ => 1) } $meta->get_method_list;
         $methods{meta} = 1 if $meta->isa('Moose::Meta::Role') && Moose->VERSION < 0.90;
+        $methods{import} = 1 if $cleanee->can('import');
         my %extra = ();
 
         for my $method (keys %methods) {
